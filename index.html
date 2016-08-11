@@ -1,0 +1,56 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Startship</title>
+  <script src="jquery-3.0.0.min.js"></script>
+  <script src="underscore.js"></script>
+  <script src="backbone.js"></script>
+
+</head>
+
+<body>
+</body>
+
+<script>
+var StarshipModel = Backbone.Model.extend({
+ 
+});
+
+var StarshipCollection = Backbone.Collection.extend({
+  model: StarshipModel,
+  url: "http://swapi.co/api/starships",
+  parse: function(data) {
+    // takes only necessary part
+    return data.results;
+  },
+  falconChecker: function() {
+    // we should use .models
+    _.each(this.models, function(elem, idx) {
+      console.log('elem of StarshipCollection', elem);
+      if(elem.get("name") == "Millennium Falcon") {
+        elem.set('cost_in_credits', "priceless");
+      }
+    });    
+  }
+});
+
+var starShips = new StarshipCollection();
+
+starShips.fetch().then(function() {
+  starShips.falconChecker();
+  console.log('starShips.models = ', starShips.models);
+
+  var res = starShips.findWhere({name: "Millennium Falcon"});
+  console.log('res = ', res);
+  console.log('res.changed = ', res.changed);    
+});
+
+// some misc test
+var compiled = _.template(
+  "<h1>Hey there, <%= name %></h1>"
+  );
+
+console.log(compiled({name: 'Ken'}));
+</script>
+
+</html>
